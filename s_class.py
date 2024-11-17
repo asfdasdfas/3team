@@ -18,7 +18,7 @@ class_names = ['angry', 'Anxiety', 'happy', 'neutrality', 'Panic', 'sad', 'Wound
 
 # 데이터셋 경로 설정
 dataset_path = 'D:/kor_face_ai/Training'  # 원천 데이터셋 경로
-labeled_dataset_path = 'D:/kor_face_ai/Validation'  # 라벨링된 데이터셋 경로
+labeled_dataset_path = 'D:/kor_face_ai/LabeledData'  # 라벨링된 데이터셋 경로
 output_path = 'D:/kor_face_ai/YOLOv5_output'
 os.makedirs(output_path, exist_ok=True)
 
@@ -38,7 +38,12 @@ class CustomImageDataset(Dataset):
 
     def __getitem__(self, idx):
         image_path = self.image_paths[idx]
-        image = Image.open(image_path).convert('RGB')
+        try:
+            image = Image.open(image_path).convert('RGB')
+            image = ImageOps.exif_transpose(image)
+        except (OSError, IOError) as e:
+            print(f"이미지 로드 오류: {image_path}, 오류: {e}")
+            return None, -1, image_path
         image = ImageOps.exif_transpose(image)
         label = os.path.basename(os.path.dirname(image_path))
         label_idx = class_names.index(label) if label in class_names else -1
@@ -76,6 +81,11 @@ all_labels = []
 saved_images_count = 0  # 저장된 이미지 수를 추적
 
 for images, labels, paths in val_loader:
+    # None 값을 가진 데이터를 필터링합니다.
+    valid_data = [(img, lbl, path) for img, lbl, path in zip(images, labels, paths) if img is not None]
+    if not valid_data:
+        continue
+    images, labels, paths = zip(*valid_data)
     for i in range(len(images)):
         frame = images[i].numpy().transpose((1, 2, 0))  # Tensor를 numpy 이미지로 변환
         frame = (frame * 255).astype(np.uint8)
