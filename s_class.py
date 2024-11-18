@@ -17,8 +17,8 @@ model = torch.hub.load('ultralytics/yolov5', 'custom', path=yolov5_model_path).t
 class_names = ['angry', 'Anxiety', 'happy', 'neutrality', 'Panic', 'sad', 'Wound']
 
 # 데이터셋 경로 설정
-dataset_path = 'D:/kor_face_ai/Training'  # 원천 데이터셋 경로
-labeled_dataset_path = 'D:/kor_face_ai/LabeledData'  # 라벨링된 데이터셋 경로
+dataset_path = 'D:/kor_face_ai/real_t'  # 원천 데이터셋 경로
+labeled_dataset_path = 'D:/kor_face_ai/Validation'  # 라벨링된 데이터셋 경로
 output_path = 'D:/kor_face_ai/YOLOv5_output'
 os.makedirs(output_path, exist_ok=True)
 
@@ -105,8 +105,8 @@ for images, labels, paths in val_loader:
                 label = f'{class_names[int(cls)]} {conf:.2f}'
 
                 # 바운딩 박스 그리기
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 4)
-                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 4)
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+                cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 8)
 
                 # 예측값과 레이블 저장
                 all_preds.append(int(cls))
