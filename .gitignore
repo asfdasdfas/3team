@@ -1,0 +1,3 @@
+dataset/
+.emotion_model.pth
+.best.pt
