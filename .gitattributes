@@ -1,0 +1,2 @@
+D:/git/3team/img_mk/models/emotion_model.pth filter=lfs diff=lfs merge=lfs -text
+D:/git/3team/img_mk/models/yolov5/best.pt filter=lfs diff=lfs merge=lfs -text
